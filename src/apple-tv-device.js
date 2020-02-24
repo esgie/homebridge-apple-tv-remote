@@ -247,7 +247,7 @@ AppleTvDevice.prototype.disconnect = function() {
     if (device.appleTvApi) {
         try {
         device.appleTvApi.closeConnection();
-        } catch { }
+        } catch (e) { }
         device.appleTvApi = null;
     }
 }
