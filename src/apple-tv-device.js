@@ -165,67 +165,74 @@ AppleTvDevice.prototype.connect = function() {
         return;
     }
 
+    // Tries to disconnect, in case a connection has already been established
+    this.disconnect();
+
     // Tries to scan for the Apple TV
     device.platform.log(device.uniqueIdentifier + ' - Scanning for Apple TV...');
-    appletv.scan(device.uniqueIdentifier, device.platform.config.scanTimeout).then(function (appleTvApis) {
+    return new Promise(function(resolve, reject) {
+        appletv.scan(device.uniqueIdentifier, device.platform.config.scanTimeout).then(function (appleTvApis) {
 
-        // Initializes the Apple TV API object
-        const appleTvApi = appleTvApis[0];
-        device.platform.log(device.uniqueIdentifier + ' - Apple TV found, IP address: ' + appleTvApi.address);
+            // Initializes the Apple TV API object
+            const appleTvApi = appleTvApis[0];
+            device.platform.log(device.uniqueIdentifier + ' - Apple TV found, IP address: ' + appleTvApi.address);
 
-        // Tries to open the connection to the Apple TV
-        device.platform.log(device.uniqueIdentifier + ' - Connecting to Apple TV...');
-        appleTvApi.openConnection(device.credentials).then(function () {
-            device.platform.log(device.uniqueIdentifier + ' - Connected to Apple TV.');
+            // Tries to open the connection to the Apple TV
+            device.platform.log(device.uniqueIdentifier + ' - Connecting to Apple TV...');
+            return appleTvApi.openConnection(device.credentials).then(function () {
+                device.platform.log(device.uniqueIdentifier + ' - Connected to Apple TV.');
 
-            // Stores the Apple TV API object
-            device.appleTvApi = appleTvApi;
+                // Stores the Apple TV API object
+                device.appleTvApi = appleTvApi;
 
-            // Subscribes to messages
-            device.appleTvApi.on('message', function(message) {
-    
-                // Updates the play state
-                if (message.payload && typeof message.payload.playbackState !== 'undefined') {
-                    if (device.playPauseSwitchService) {
-                        device.platform.log(device.uniqueIdentifier + ' - Update Play State to ' + message.payload.playbackState);
-                        device.playPauseSwitchService.updateCharacteristic(Characteristic.On, message.payload.playbackState === 1);
+                // Subscribes to messages
+                device.appleTvApi.on('message', function(message) {
+        
+                    // Updates the play state
+                    if (message.payload && typeof message.payload.playbackState !== 'undefined') {
+                        if (device.playPauseSwitchService) {
+                            device.platform.log(device.uniqueIdentifier + ' - Update Play State to ' + message.payload.playbackState);
+                            device.playPauseSwitchService.updateCharacteristic(Characteristic.On, message.payload.playbackState === 1);
+                        }
                     }
-                }
-    
-                // Updates the on/off state
-                if (message.payload && typeof message.payload.logicalDeviceCount !== 'undefined') {
-                    device.platform.log(device.uniqueIdentifier + ' - Update Standby State to ' + message.payload.logicalDeviceCount);
-                    if (device.onOffSwitchService) {
-                        device.onOffSwitchService.updateCharacteristic(Characteristic.On, message.payload.logicalDeviceCount > 0);
+        
+                    // Updates the on/off state
+                    if (message.payload && typeof message.payload.logicalDeviceCount !== 'undefined') {
+                        device.platform.log(device.uniqueIdentifier + ' - Update Standby State to ' + message.payload.logicalDeviceCount);
+                        if (device.onOffSwitchService) {
+                            device.onOffSwitchService.updateCharacteristic(Characteristic.On, message.payload.logicalDeviceCount > 0);
+                        }
+                        if (device.playPauseSwitchService && message.payload.logicalDeviceCount == 0) {
+                            device.playPauseSwitchService.updateCharacteristic(Characteristic.On, false);
+                        }
                     }
-                    if (device.playPauseSwitchService && message.payload.logicalDeviceCount == 0) {
-                        device.playPauseSwitchService.updateCharacteristic(Characteristic.On, false);
-                    }
-                }
+                });
+        
+                // Subscribes to connection issues
+                device.appleTvApi.on('close', function() {
+                    device.connect();
+                });
+
+                // Initially gets the device information
+                device.appleTvApi.sendIntroduction().then(function() { resolve(); }, function() { reject(); });
+            }, function () {
+                reject();
+
+                // Tries to connect again
+                device.platform.log(device.uniqueIdentifier + ' - Connection failed. Trying again soon.');
+                setTimeout(function() {
+                    device.connect();
+                }, device.platform.config.connectRetryInterval * 1000);
             });
-    
-            // Subscribes to connection issues
-            device.appleTvApi.on('close', function() {
-                device.connect();
-            });
+        }, function() {
+            reject();
 
-            // Initially gets the device information
-            device.appleTvApi.sendIntroduction();
-        }, function () {
-
-            // Tries to connect again
-            device.platform.log(device.uniqueIdentifier + ' - Connection failed. Trying again soon.');
+            // Tries to scan again
+            device.platform.log(device.uniqueIdentifier + ' - Apple TV not found. Trying again soon.');
             setTimeout(function() {
                 device.connect();
             }, device.platform.config.connectRetryInterval * 1000);
         });
-    }, function() {
-
-        // Tries to scan again
-        device.platform.log(device.uniqueIdentifier + ' - Apple TV not found. Trying again soon.');
-        setTimeout(function() {
-            device.connect();
-        }, device.platform.config.connectRetryInterval * 1000);
     });
 }
 
@@ -238,7 +245,9 @@ AppleTvDevice.prototype.disconnect = function() {
     // Closes the existing connection
     device.platform.log(device.uniqueIdentifier + ' - Disconnect');
     if (device.appleTvApi) {
+        try {
         device.appleTvApi.closeConnection();
+        } catch { }
         device.appleTvApi = null;
     }
 }
@@ -247,7 +256,7 @@ AppleTvDevice.prototype.disconnect = function() {
  * Sends a key press to the Apple TV.
  * @param key The key to be pressed.
  */
-AppleTvDevice.prototype.pressKey = function(key) {
+AppleTvDevice.prototype.pressKey = function(key, failOnError) {
     const device = this;
 
     // Checks if the Apple TV is connected
@@ -260,7 +269,24 @@ AppleTvDevice.prototype.pressKey = function(key) {
     device.platform.log(device.uniqueIdentifier + ' - Press key ' + key);
     const usage = device.getUsage(key);
     if (usage) {
-        return device.appleTvApi.sendKeyPressAndRelease(usage.usePage, usage.usage);
+        return new Promise(function(resolve, reject) {
+            device.appleTvApi.sendKeyPressAndRelease(usage.usePage, usage.usage).then(function() {
+                resolve();
+            }, function() {
+                if (failOnError) {
+                    return reject();
+                }
+
+                // Tries a reconnect
+                device.platform.log(device.uniqueIdentifier + ' - Press key ' + key + ' failed, connect and try again');
+                device.connect().then(function() {
+                    this.pressKey(key, true).then(function() { resolve(); }, function() { reject(); });
+                }, function() {
+                    device.platform.log(device.uniqueIdentifier + ' - Press key ' + key + ' failed even after reconnect');
+                    reject();
+                });
+            });
+        });
     } else {
         return new Promise(function(resolve, reject) { reject(); });
     }
@@ -270,7 +296,7 @@ AppleTvDevice.prototype.pressKey = function(key) {
  * Sends a long key press to the Apple TV.
  * @param key The key to be pressed.
  */
-AppleTvDevice.prototype.longPressKey = function(key) {
+AppleTvDevice.prototype.longPressKey = function(key, failOnError) {
     const device = this;
 
     // Checks if the Apple TV is connected
@@ -280,7 +306,7 @@ AppleTvDevice.prototype.longPressKey = function(key) {
     }
     
     // Gets the usage and sends the actual key press
-    device.platform.log(device.uniqueIdentifier + ' - Press key ' + key);
+    device.platform.log(device.uniqueIdentifier + ' - Long press key ' + key);
     const usage = device.getUsage(key);
     if (usage) {
         return device.appleTvApi.sendKeyPress(usage.usePage, usage.usage, true).then(function() {
@@ -288,6 +314,19 @@ AppleTvDevice.prototype.longPressKey = function(key) {
                 setTimeout(function() {
                     device.appleTvApi.sendKeyPress(usage.usePage, usage.usage, false).then(function() { resolve(); }, function() { reject(); });
                 }, 1000);
+            });
+        }, function() {
+            if (failOnError) {
+                return reject();
+            }
+
+            // Tries a reconnect
+            device.platform.log(device.uniqueIdentifier + ' - Long press key ' + key + ' failed, connect and try again');
+            device.connect().then(function() {
+                this.longPressKey(key, true).then(function() { resolve(); }, function() { reject(); });
+            }, function() {
+                device.platform.log(device.uniqueIdentifier + ' - Long press key ' + key + ' failed even after reconnect');
+                reject();
             });
         });
     } else {
