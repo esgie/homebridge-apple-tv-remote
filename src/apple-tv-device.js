@@ -191,6 +191,8 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message.elapsedTime);
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message.duration);
 
+      playPauseSwitchService.getCharacteristic(Characteristic.On).updateValue(message.payload.playbackState === "playing");
+
       appleTv.requestPlaybackQueue({});
     });
   }
