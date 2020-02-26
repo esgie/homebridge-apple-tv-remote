@@ -172,6 +172,8 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(nowPlayingInfo && nowPlayingInfo.duration ? nowPlayingInfo.duration : "-");
 
       playPauseSwitchService.getCharacteristic(Characteristic.On).updateValue(nowPlayingInfo.playbackState === "playing");
+
+      appleTv.sendMessage("SetStateMessage", "SetStateMessage", {}, true);
     };
 
     // Starts getting playback information
