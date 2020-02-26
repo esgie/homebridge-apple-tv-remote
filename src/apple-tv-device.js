@@ -159,30 +159,6 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting playback information
     appleTv.on("message", function(message) {
-      let newMessage = JSON.parse(JSON.stringify(message));
-
-      platform.log(JSON.stringify(message));
-
-      if (newMessage && newMessage.payload && newMessage.payload.playbackQueue) {
-          platform.log(newMessage.payload.playbackQueue);
-        // let nowPlaying = newMessage.payload.playbackQueue.contentItems.metadata;
-
-        // if (!nowPlaying) return;
-
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.title ? nowPlaying.title : null);
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(nowPlaying.artist ? nowPlaying.artist : null);
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(nowPlaying.album ? nowPlaying.album : null);
-        // playPauseSwitchService
-        //   .getCharacteristic(AppleTvCharacteristics.Application)
-        //   .updateValue(nowPlaying.payload && nowPlaying.payload.displayName ? nowPlaying.payload.displayName : null);
-        // playPauseSwitchService
-        //   .getCharacteristic(AppleTvCharacteristics.ApplicationBundle)
-        //   .updateValue(nowPlaying.playerPath && nowPlaying.playerPath.client && nowPlaying.playerPath.client.bundleIdentifier ? nowPlaying.appBundleIdentifier : null);
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(nowPlaying.elapsedTime ? nowPlaying.elapsedTime : null);
-        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(nowPlaying.duration ? nowPlaying.duration : null);
-      }
-
       // Updates the play state
       if (message.payload && typeof message.payload.playbackState !== "undefined") {
         if (playPauseSwitchService) {
@@ -205,20 +181,17 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting now playing information
     appleTv.on("nowPlaying", function(message) {
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message ? message.title : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message ? message.artist : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message ? message.album : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message ? message.appDisplayName : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message ? message.appBundleIdentifier : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message ? message.elapsedTime : null);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message ? message.duration : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message.album && message.artist ? "video" : "music");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message.title ? message.title : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message.artist ? message.artist : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message.album ? message.album : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message.appDisplayName ? message.appDisplayName : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message.appBundleIdentifier ? message.appBundleIdentifier : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message.elapsedTime);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message.duration);
+
+      appleTv.requestPlaybackQueue({});
     });
-
-    updatePlaybackQueue = function () {
-        appleTv.requestPlaybackQueue({}).then(message => platform.log(message));
-    }
-
-    updatePlaybackQueue();
   }
 }
 
