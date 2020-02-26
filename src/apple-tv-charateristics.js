@@ -110,7 +110,7 @@ module.exports = function(api) {
     Characteristic.call(this, "Elapsed", Characteristic.Elapsed.UUID);
 
     this.setProps({
-      format: Characteristic.Formats.INT,
+      format: Characteristic.Formats.STRING,
       perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
     });
 
@@ -126,7 +126,7 @@ module.exports = function(api) {
     Characteristic.call(this, "Duration", Characteristic.Duration.UUID);
 
     this.setProps({
-      format: Characteristic.Formats.INT,
+      format: Characteristic.Formats.STRING,
       perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
     });
 
