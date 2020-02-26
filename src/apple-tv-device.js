@@ -181,7 +181,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting now playing information
     appleTv.on("nowPlaying", function(message) {
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message.album && message.artist ? "video" : "music");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message.album && message.artist ? "Music" : "Video");
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message.title ? message.title : null);
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message.artist ? message.artist : null);
       playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message.album ? message.album : null);
