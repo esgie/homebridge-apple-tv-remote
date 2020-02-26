@@ -182,6 +182,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
         if (!(newMessage && newMessage.payload && newMessage.payload.nowPlayingInfo)) {
           platform.log(newMessage && newMessage.payload && newMessage.payload.nowPlayingInfo);
         } else {
+            platform.log("here");
           setNowPlayingInfo({
             title: newMessage.payload.nowPlayingInfo.title,
             artist: newMessage.payload.nowPlayingInfo.artist,
