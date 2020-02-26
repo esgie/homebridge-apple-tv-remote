@@ -161,8 +161,6 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting playback information
     appleTv.on("message", function(message) {
-        platform.log("get message: " + JSON.stringify(message));
-
         if(message && message.message && message.message.type && message.message.type === "SET_STATE_MESSAGE") {
             playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message ? message.type : null);
         }
