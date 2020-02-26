@@ -84,13 +84,13 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Updates the play/pause switch service
     let playPauseSwitchService = switchAccessory.getServiceByUUIDAndSubType(Service.Switch, "Play");
 
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Application);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.ApplicationBundle);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Elapsed);
-    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Duration);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Title) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Artist) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Album) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Application) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Application);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.ApplicationBundle) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.ApplicationBundle);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Elapsed) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Elapsed);
+    !!!playPauseSwitchService.getCharacteristic(Characteristic.Duration) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Duration);
 
     if (config.isPlayPauseSwitchEnabled) {
       if (!playPauseSwitchService) {
