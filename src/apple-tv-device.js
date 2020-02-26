@@ -193,7 +193,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
       playPauseSwitchService.getCharacteristic(Characteristic.On).updateValue(message.playbackState === "playing");
 
-      appleTv.sendMessage("ContentItem", "ContentItem", {}, true).then(_m => platform.log(_m));
+      appleTv.sendMessage("DeviceInfoMessage", "DeviceInfoMessage", {}, true).then(_m => platform.log(_m));
     });
   }
 }
