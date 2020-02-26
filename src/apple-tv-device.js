@@ -162,22 +162,23 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       let newMessage = JSON.parse(JSON.stringify(message));
 
       if (newMessage && newMessage.payload && newMessage.payload.playbackQueue) {
-        let nowPlaying = newMessage.payload.playbackQueue.contentItems.metadata;
+          platform.log(newMessage.payload.playbackQueue);
+        // let nowPlaying = newMessage.payload.playbackQueue.contentItems.metadata;
 
-        if (!nowPlaying) return;
+        // if (!nowPlaying) return;
 
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.title ? nowPlaying.title : null);
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(nowPlaying.artist ? nowPlaying.artist : null);
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(nowPlaying.album ? nowPlaying.album : null);
-        playPauseSwitchService
-          .getCharacteristic(AppleTvCharacteristics.Application)
-          .updateValue(nowPlaying.payload && nowPlaying.payload.displayName ? nowPlaying.payload.displayName : null);
-        playPauseSwitchService
-          .getCharacteristic(AppleTvCharacteristics.ApplicationBundle)
-          .updateValue(nowPlaying.playerPath && nowPlaying.playerPath.client && nowPlaying.playerPath.client.bundleIdentifier ? nowPlaying.appBundleIdentifier : null);
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(nowPlaying.elapsedTime ? nowPlaying.elapsedTime : null);
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(nowPlaying.duration ? nowPlaying.duration : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.title ? nowPlaying.title : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(nowPlaying.artist ? nowPlaying.artist : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(nowPlaying.album ? nowPlaying.album : null);
+        // playPauseSwitchService
+        //   .getCharacteristic(AppleTvCharacteristics.Application)
+        //   .updateValue(nowPlaying.payload && nowPlaying.payload.displayName ? nowPlaying.payload.displayName : null);
+        // playPauseSwitchService
+        //   .getCharacteristic(AppleTvCharacteristics.ApplicationBundle)
+        //   .updateValue(nowPlaying.playerPath && nowPlaying.playerPath.client && nowPlaying.playerPath.client.bundleIdentifier ? nowPlaying.appBundleIdentifier : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(nowPlaying.elapsedTime ? nowPlaying.elapsedTime : null);
+        // playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(nowPlaying.duration ? nowPlaying.duration : null);
       }
 
       // Updates the play state
