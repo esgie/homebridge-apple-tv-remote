@@ -1,6 +1,6 @@
 const inherits = require("util").inherits;
 
-let AppleTvCharacteristics = {};
+let Characteristic = {};
 
 /**
  * Registers now playing charactersitics for the AppleTV plugin.
@@ -10,8 +10,8 @@ module.exports = function(api) {
   let Characteristic = api.hap.Characteristic;
 
   // The currently playing media title
-  AppleTvCharacteristics.Title = function() {
-    Characteristic.call(this, "Title", "b6e8eb16-9f0e-4a15-902b-f415c0ac5570");
+  Characteristic.Title = function() {
+    Characteristic.call(this, "Title", Characteristic.Title.UUID);
 
     this.setProps({
       format: Characteristic.Formats.STRING,
@@ -21,11 +21,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Title, Characteristic);
+  Characteristic.Title.UUID = "b6e8eb16-9f0e-4a15-902b-f415c0ac5570";
+
+  inherits(Characteristic.Title, Characteristic);
 
   // The currently playing media artist
-  AppleTvCharacteristics.Artist = function() {
-    Characteristic.call(this, "Artist", "5c9506e7-d60c-4fe0-8614-1677d74867c8");
+  Characteristic.Artist = function() {
+    Characteristic.call(this, "Artist", Characteristic.Artist.UUID);
 
     this.setProps({
       format: Characteristic.Formats.STRING,
@@ -35,11 +37,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Artist, Characteristic);
+  Characteristic.Artist.UUID = "5c9506e7-d60c-4fe0-8614-1677d74867c8";
+
+  inherits(Characteristic.Artist, Characteristic);
 
   // The currently playing media album
-  AppleTvCharacteristics.Album = function() {
-    Characteristic.call(this, "Album", "ffcdb20b-bf68-4018-a0be-8bac52bf4fdd");
+  Characteristic.Album = function() {
+    Characteristic.call(this, "Album", Characteristic.Album.UUID);
 
     this.setProps({
       format: Characteristic.Formats.STRING,
@@ -49,11 +53,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Album, Characteristic);
+  Characteristic.Album.UUID = "ffcdb20b-bf68-4018-a0be-8bac52bf4fdd";
+
+  inherits(Characteristic.Album, Characteristic);
 
   // The currently active application name
-  AppleTvCharacteristics.Application = function() {
-    Characteristic.call(this, "Application", "3b29ffb8-debf-4512-9572-78fd43294263");
+  Characteristic.Application = function() {
+    Characteristic.call(this, "Application", Characteristic.Application.UUID);
 
     this.setProps({
       format: Characteristic.Formats.STRING,
@@ -63,11 +69,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Application, Characteristic);
+  Characteristic.Application.UUID = "3b29ffb8-debf-4512-9572-78fd43294263";
+
+  inherits(Characteristic.Application, Characteristic);
 
   // The currently active application bundle identifier
-  AppleTvCharacteristics.ApplicationBundle = function() {
-    Characteristic.call(this, "ApplicationBundle", "75448494-3c05-4962-acaf-29dcd7baca66");
+  Characteristic.ApplicationBundle = function() {
+    Characteristic.call(this, "ApplicationBundle", Characteristic.ApplicationBundle.UUID);
 
     this.setProps({
       format: Characteristic.Formats.STRING,
@@ -77,11 +85,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.ApplicationBundle, Characteristic);
+  Characteristic.ApplicationBundle.UUID = "75448494-3c05-4962-acaf-29dcd7baca66";
+
+  inherits(Characteristic.ApplicationBundle, Characteristic);
 
   // The currently playing media elapsed time
-  AppleTvCharacteristics.Elapsed = function() {
-    Characteristic.call(this, "Elapsed", "51d56c6c-131b-4b92-bf22-9bcc7e66b877");
+  Characteristic.Elapsed = function() {
+    Characteristic.call(this, "Elapsed", Characteristic.Elapsed.UUID);
 
     this.setProps({
       format: Characteristic.Formats.INT,
@@ -91,11 +101,13 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Elapsed, Characteristic);
+  Characteristic.Elapsed.UUID = "51d56c6c-131b-4b92-bf22-9bcc7e66b877";
+
+  inherits(Characteristic.Elapsed, Characteristic);
 
   // The currently playing media duration
-  AppleTvCharacteristics.Duration = function() {
-    Characteristic.call(this, "Duration", "af4bcf1f-bbe6-483b-969c-9149926e3328");
+  Characteristic.Duration = function() {
+    Characteristic.call(this, "Duration", Characteristic.Duration.UUID);
 
     this.setProps({
       format: Characteristic.Formats.INT,
@@ -105,7 +117,9 @@ module.exports = function(api) {
     this.value = this.getDefaultValue();
   };
 
-  inherits(AppleTvCharacteristics.Duration, Characteristic);
+  Characteristic.Duration.UUID = "af4bcf1f-bbe6-483b-969c-9149926e3328";
 
-  return AppleTvCharacteristics;
+  inherits(Characteristic.Duration, Characteristic);
+
+  return Characteristic;
 };
