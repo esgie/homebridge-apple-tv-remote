@@ -163,6 +163,8 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
         let nowPlaying = message.payload.playbackQueue.contentItems.metadata;
 
         if(!nowPlaying) return;
+
+        platform.log(JSON.stringify(nowPlaying));
         
         playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
         playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.title ? nowPlaying.title : null);
