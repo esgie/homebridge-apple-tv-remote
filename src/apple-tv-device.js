@@ -212,7 +212,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     });
 
     updatePlaybackQueue = function () {
-        appleTv.requestPlaybackQueue().then(message => platform.log(message));
+        appleTv.requestPlaybackQueue({}).then(message => platform.log(message));
     }
 
     updatePlaybackQueue();
