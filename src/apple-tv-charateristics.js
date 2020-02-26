@@ -23,7 +23,7 @@ module.exports = function(api) {
 
   Characteristic.Type.UUID = "cb07b525-084f-4e40-83b0-76013d9c6436";
 
-  inherits(Characteristic.Title, Characteristic);
+  inherits(Characteristic.Type, Characteristic);
 
   // The currently playing media title
   Characteristic.Title = function() {
