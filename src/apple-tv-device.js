@@ -157,18 +157,22 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       });
     }
 
-    let setNowPlayingInfo = function (nowPlayingInfo) {
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message ? (message.album && message.artist ? "Music" : "Video") : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message && message.title ? message.title : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message && message.artist ? message.artist : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message && message.album ? message.album : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message && message.appDisplayName ? message.appDisplayName : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message && message.appBundleIdentifier ? message.appBundleIdentifier : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message && message.elapsedTime ? message.elapsedTime : "-");
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message && message.duration ? message.duration : "-");
-  
-        playPauseSwitchService.getCharacteristic(Characteristic.On).updateValue(message.playbackState === "playing");
-    }
+    let setNowPlayingInfo = function(nowPlayingInfo) {
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlayingInfo ? (nowPlayingInfo.album && nowPlayingInfo.artist ? "Music" : "Video") : "-");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlayingInfo && nowPlayingInfo.title ? nowPlayingInfo.title : "-");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(nowPlayingInfo && nowPlayingInfo.artist ? nowPlayingInfo.artist : "-");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(nowPlayingInfo && nowPlayingInfo.album ? nowPlayingInfo.album : "-");
+      playPauseSwitchService
+        .getCharacteristic(AppleTvCharacteristics.Application)
+        .updateValue(nowPlayingInfo && nowPlayingInfo.appDisplayName ? nowPlayingInfo.appDisplayName : "-");
+      playPauseSwitchService
+        .getCharacteristic(AppleTvCharacteristics.ApplicationBundle)
+        .updateValue(nowPlayingInfo && nowPlayingInfo.appBundleIdentifier ? nowPlayingInfo.appBundleIdentifier : "-");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(nowPlayingInfo && nowPlayingInfo.elapsedTime ? nowPlayingInfo.elapsedTime : "-");
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(nowPlayingInfo && nowPlayingInfo.duration ? nowPlayingInfo.duration : "-");
+
+      playPauseSwitchService.getCharacteristic(Characteristic.On).updateValue(nowPlayingInfo.playbackState === "playing");
+    };
 
     // Starts getting playback information
     appleTv.on("message", function(message) {
@@ -176,14 +180,14 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
       if (newMessage.type === 4) {
         setNowPlayingInfo({
-            title: newMessage.payload.nowPlayingInfo.title,
-            artist: newMessage.payload.nowPlayingInfo.artist,
-            album: newMessage.payload.nowPlayingInfo.album,
-            appDisplayName: newMessage.payload.displayName,
-            appBundleIdentifier: newMessage.payload.displayID,
-            elapsedTime: newMessage.payload.nowPlayingInfo.elapsedTime,
-            duration: newMessage.payload.nowPlayingInfo.duration,
-            playbackState: newMessage.payload.playbackState.toLowerCase()
+          title: newMessage.payload.nowPlayingInfo.title,
+          artist: newMessage.payload.nowPlayingInfo.artist,
+          album: newMessage.payload.nowPlayingInfo.album,
+          appDisplayName: newMessage.payload.displayName,
+          appBundleIdentifier: newMessage.payload.displayID,
+          elapsedTime: newMessage.payload.nowPlayingInfo.elapsedTime,
+          duration: newMessage.payload.nowPlayingInfo.duration,
+          playbackState: newMessage.payload.playbackState.toLowerCase()
         });
       }
 
