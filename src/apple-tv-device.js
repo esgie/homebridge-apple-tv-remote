@@ -26,10 +26,12 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
   // Gets the switch accessory
   let switchAccessory = null;
+
   if (config.isOnOffSwitchEnabled || config.isPlayPauseSwitchEnabled) {
     switchAccessory = unusedDeviceAccessories.find(function(a) {
       return a.context.kind === "SwitchAccessory";
     });
+
     if (switchAccessory) {
       unusedDeviceAccessories.splice(unusedDeviceAccessories.indexOf(switchAccessory), 1);
     } else {
@@ -39,6 +41,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       switchAccessory.context.kind = "SwitchAccessory";
       newDeviceAccessories.push(switchAccessory);
     }
+
     deviceAccessories.push(switchAccessory);
 
     // Registers the newly created accessories
@@ -48,19 +51,26 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
   // Removes all unused accessories
   for (let i = 0; i < unusedDeviceAccessories.length; i++) {
     const unusedDeviceAccessory = unusedDeviceAccessories[i];
+
     platform.log("Removing unused accessory with unique ID " + device.uniqueIdentifier + " and kind " + unusedDeviceAccessory.context.kind + ".");
     platform.accessories.splice(platform.accessories.indexOf(unusedDeviceAccessory), 1);
   }
+
   platform.api.unregisterPlatformAccessories(platform.pluginName, platform.platformName, unusedDeviceAccessories);
 
   // Updates the accessory information
   if (config.isOnOffSwitchEnabled || config.isPlayPauseSwitchEnabled) {
+
     for (let i = 0; i < deviceAccessories.length; i++) {
+
       const deviceAccessory = deviceAccessories[i];
+
       let accessoryInformationService = deviceAccessory.getService(Service.AccessoryInformation);
+
       if (!accessoryInformationService) {
         accessoryInformationService = deviceAccessory.addService(Service.AccessoryInformation);
       }
+
       accessoryInformationService
         .setCharacteristic(Characteristic.Manufacturer, "Apple")
         .setCharacteristic(Characteristic.Model, "Apple TV")
@@ -150,6 +160,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting playback information
     appleTv.on("message", function(message) {
+        platform.log("get message: " + JSON.stringify(message));
       // Updates the play state
       if (message.payload && typeof message.payload.playbackState !== "undefined") {
         if (playPauseSwitchService) {
