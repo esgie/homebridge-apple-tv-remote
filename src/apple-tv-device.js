@@ -94,6 +94,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Updates the play/pause switch service
     let playPauseSwitchService = switchAccessory.getServiceByUUIDAndSubType(Service.Switch, "Play");
 
+    !!!playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Type);
     !!!playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
     !!!playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
     !!!playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album) && playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
@@ -161,6 +162,11 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Starts getting playback information
     appleTv.on("message", function(message) {
         platform.log("get message: " + JSON.stringify(message));
+
+        if(message && message.message && message.message.type && message.message.type === "SET_STATE_MESSAGE") {
+            playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message ? message.type : null);
+        }
+
       // Updates the play state
       if (message.payload && typeof message.payload.playbackState !== "undefined") {
         if (playPauseSwitchService) {
@@ -184,13 +190,13 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Starts getting now playing information
     appleTv.on("nowPlaying", function(message) {
       platform.log("updating now playing: " + JSON.stringify(message));
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message.title);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message.artist);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message.album);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message.appDisplayName);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message.appBundleIdentifier);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message.elapsedTime);
-      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message.duration);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message ? message.title : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message ? message.artist : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message ? message.album : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message ? message.appDisplayName : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message ? message.appBundleIdentifier : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message ? message.elapsedTime : null);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message ? message.duration : null);
     });
   }
 }

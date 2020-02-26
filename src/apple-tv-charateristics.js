@@ -9,6 +9,22 @@ let Characteristic = {};
 module.exports = function(api) {
   let Characteristic = api.hap.Characteristic;
 
+  // The currently playing media type
+  Characteristic.Type = function() {
+    Characteristic.call(this, "Type", Characteristic.Type.UUID);
+
+    this.setProps({
+      format: Characteristic.Formats.STRING,
+      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
+    });
+
+    this.value = this.getDefaultValue();
+  };
+
+  Characteristic.Type.UUID = "cb07b525-084f-4e40-83b0-76013d9c6436";
+
+  inherits(Characteristic.Title, Characteristic);
+
   // The currently playing media title
   Characteristic.Title = function() {
     Characteristic.call(this, "Title", Characteristic.Title.UUID);
