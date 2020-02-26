@@ -84,21 +84,17 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Updates the play/pause switch service
     let playPauseSwitchService = switchAccessory.getServiceByUUIDAndSubType(Service.Switch, "Play");
 
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Application);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.ApplicationBundle);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Elapsed);
+    playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Duration);
+
     if (config.isPlayPauseSwitchEnabled) {
       if (!playPauseSwitchService) {
         playPauseSwitchService = switchAccessory.addService(Service.Switch, "Play", "Play");
-
-        platform.log("Adding new custom characteristics to SwitchAccessory.");
-
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Application);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.ApplicationBundle);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Elapsed);
-        playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Duration);
-
-        playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Title, "testing 123");
       }
     } else {
       if (playPauseSwitchService) {
