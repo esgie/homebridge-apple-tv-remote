@@ -184,13 +184,13 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     // Starts getting now playing information
     appleTv.on("nowPlaying", function(message) {
       platform.log("updating now playing: " + JSON.stringify(message));
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Title, message.title);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Artist, message.artist);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Album, message.album);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Application, message.appDisplayName);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.ApplicationBundle, message.appBundleIdentifier);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Elapsed, message.elapsedTime);
-      playPauseSwitchService.updateCharacteristic(AppleTvCharacteristics.Duration, message.duration);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(message.title);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(message.artist);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(message.album);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Application).updateValue(message.appDisplayName);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.ApplicationBundle).updateValue(message.appBundleIdentifier);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Elapsed).updateValue(message.elapsedTime);
+      playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Duration).updateValue(message.duration);
     });
   }
 }
