@@ -179,16 +179,20 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       let newMessage = JSON.parse(JSON.stringify(message));
 
       if (newMessage.type === 4) {
-        setNowPlayingInfo(newMessage && newMessage.payload ? {
-          title: newMessage.payload.nowPlayingInfo.title,
-          artist: newMessage.payload.nowPlayingInfo.artist,
-          album: newMessage.payload.nowPlayingInfo.album,
-          appDisplayName: newMessage.payload.displayName,
-          appBundleIdentifier: newMessage.payload.displayID,
-          elapsedTime: newMessage.payload.nowPlayingInfo.elapsedTime,
-          duration: newMessage.payload.nowPlayingInfo.duration,
-          playbackState: newMessage.payload.playbackState.toLowerCase()
-        } : null);
+        if (!(newMessage && newMessage.payload && newMessage.payload.nowPlayingInfo)) {
+          platform.log(newMessage && newMessage.payload && newMessage.payload.nowPlayingInfo);
+        } else {
+          setNowPlayingInfo({
+            title: newMessage.payload.nowPlayingInfo.title,
+            artist: newMessage.payload.nowPlayingInfo.artist,
+            album: newMessage.payload.nowPlayingInfo.album,
+            appDisplayName: newMessage.payload.displayName,
+            appBundleIdentifier: newMessage.payload.displayID,
+            elapsedTime: newMessage.payload.nowPlayingInfo.elapsedTime,
+            duration: newMessage.payload.nowPlayingInfo.duration,
+            playbackState: newMessage.payload.playbackState.toLowerCase()
+          });
+        }
       }
 
       // Updates the play state
