@@ -88,6 +88,8 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       if (!playPauseSwitchService) {
         playPauseSwitchService = switchAccessory.addService(Service.Switch, "Play", "Play");
 
+        platform.log("Adding new custom characteristics to SwitchAccessory.");
+
         playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Title);
         playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Artist);
         playPauseSwitchService.addCharacteristic(AppleTvCharacteristics.Album);
