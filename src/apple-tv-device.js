@@ -161,6 +161,8 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
     appleTv.on("message", function(message) {
       let newMessage = JSON.parse(JSON.stringify(message));
 
+      platform.log(JSON.stringify(message));
+
       if (newMessage && newMessage.payload && newMessage.payload.playbackQueue) {
           platform.log(newMessage.payload.playbackQueue);
         // let nowPlaying = newMessage.payload.playbackQueue.contentItems.metadata;
