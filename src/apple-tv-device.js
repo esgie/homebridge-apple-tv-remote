@@ -179,7 +179,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
       let newMessage = JSON.parse(JSON.stringify(message));
 
       if (newMessage.type === 4) {
-        setNowPlayingInfo({
+        setNowPlayingInfo(newMessage && newMessage.payload ? {
           title: newMessage.payload.nowPlayingInfo.title,
           artist: newMessage.payload.nowPlayingInfo.artist,
           album: newMessage.payload.nowPlayingInfo.album,
@@ -188,7 +188,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
           elapsedTime: newMessage.payload.nowPlayingInfo.elapsedTime,
           duration: newMessage.payload.nowPlayingInfo.duration,
           playbackState: newMessage.payload.playbackState.toLowerCase()
-        });
+        } : null);
       }
 
       // Updates the play state
