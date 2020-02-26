@@ -60,9 +60,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
   // Updates the accessory information
   if (config.isOnOffSwitchEnabled || config.isPlayPauseSwitchEnabled) {
-
     for (let i = 0; i < deviceAccessories.length; i++) {
-
       const deviceAccessory = deviceAccessories[i];
 
       let accessoryInformationService = deviceAccessory.getService(Service.AccessoryInformation);
@@ -161,9 +159,13 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
     // Starts getting playback information
     appleTv.on("message", function(message) {
-        if(message && message.message && message.message.type && message.message.type === "SET_STATE_MESSAGE") {
-            playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message ? message.type : null);
-        }
+if(message) {
+    platform.log("message: " + JSON.stringify(message));
+}
+
+      if (message && message.message && message.message.type && message.message.type === "SET_STATE_MESSAGE") {
+        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(message ? message.type : null);
+      }
 
       // Updates the play state
       if (message.payload && typeof message.payload.playbackState !== "undefined") {
