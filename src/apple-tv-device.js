@@ -164,7 +164,7 @@ function AppleTvDevice(platform, config, credentials, appleTv) {
 
         if(!nowPlaying) return;
         
-        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
+        playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Type).updateValue(nowPlaying.mediaType ? nowPlaying.mediaType.toLowerCase() : null);
         playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Title).updateValue(nowPlaying.title ? nowPlaying.title : null);
         playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Artist).updateValue(nowPlaying.artist ? nowPlaying.artist : null);
         playPauseSwitchService.getCharacteristic(AppleTvCharacteristics.Album).updateValue(nowPlaying.album ? nowPlaying.album : null);
